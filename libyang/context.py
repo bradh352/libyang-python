@@ -195,6 +195,7 @@ class Context:
         leafref_extended: bool = False,
         leafref_linking: bool = False,
         builtin_plugins_only: bool = False,
+        loose_json_datatypes: bool = False,
         yanglib_path: Optional[str] = None,
         yanglib_fmt: str = "json",
         cdata=None,  # C type: "struct ly_ctx *"
@@ -217,6 +218,8 @@ class Context:
             options |= lib.LY_CTX_LEAFREF_LINKING
         if builtin_plugins_only:
             options |= lib.LY_CTX_BUILTIN_PLUGINS_ONLY
+        if loose_json_datatypes:
+            options |= lib.LY_CTX_LOOSE_JSON_DATATYPES
         # force priv parsed
         options |= lib.LY_CTX_SET_PRIV_PARSED
 
