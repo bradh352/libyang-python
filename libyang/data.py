@@ -288,6 +288,9 @@ class DNode:
         self.attributes = None
         self.free_func = None  # type: Callable[DNode]
 
+    def __del__(self):
+        self.free();
+
     def meta(self):
         ret = {}
         item = self.cdata.meta

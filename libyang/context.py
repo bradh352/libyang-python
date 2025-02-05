@@ -259,6 +259,9 @@ class Context:
             raise self.error("cannot create context")
         self.external_module_loader = ContextExternalModuleLoader(self.cdata)
 
+    def __del__(self):
+        self.destroy()
+
     def compile_schema(self):
         ret = lib.ly_ctx_compile(self.cdata)
         if ret != lib.LY_SUCCESS:
@@ -276,12 +279,6 @@ class Context:
             if hasattr(ffi, "release"):
                 ffi.release(self.cdata)  # causes ly_ctx_destroy to be called
             self.cdata = None
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, *args, **kwargs):
-        self.destroy()
 
     def error(self, msg: str, *args) -> LibyangError:
         msg %= args
