@@ -1350,3 +1350,9 @@ extern "Python" void lypy_lyplg_ext_compile_free_clb(const struct ly_ctx *, stru
 
 /* from libc, needed to free allocated strings */
 void free(void *);
+
+/* From source.c custom C code helpers for backlinks */
+size_t pyly_backlinks_xpath_leafrefs(const struct ly_ctx *ctx, const char *xpath, char ***out);
+size_t pyly_backlinks_find_leafref_nodes(const struct ly_ctx *ctx, const char *base_path, int include_children, char ***out);
+
+void pyly_cstr_array_free(char **list, size_t nlist);

@@ -646,6 +646,42 @@ class Context:
             json_null=json_null,
         )
 
+    def backlinks_find_leafref_nodes(self, base_path: str = None, include_children: bool = False) -> list[str]:
+        if self.cdata is None:
+            raise RuntimeError("context already destroyed")
+
+        out = []
+
+        carray = ffi.new("char ***")
+        clen = lib.pyly_backlinks_find_leafref_nodes(
+            self.cdata, str2c(base_path), 1 if include_children else 0, carray
+        )
+        if clen == 0:
+            return out
+
+        for i in range(clen):
+            out.append(c2str(carray[0][i]))
+
+        lib.pyly_cstr_array_free(carray[0], clen)
+        return out
+
+    def backlinks_xpath_leafrefs(self, xpath: str) -> list[str]:
+        if self.cdata is None:
+            raise RuntimeError("context already destroyed")
+
+        out = []
+
+        carray = ffi.new("char ***")
+        clen = lib.pyly_backlinks_xpath_leafrefs(self.cdata, str2c(xpath), carray)
+        if clen == 0:
+            return out
+
+        for i in range(clen):
+            out.append(c2str(carray[0][i]))
+
+        lib.pyly_cstr_array_free(carray[0], clen)
+        return out
+
     def __iter__(self) -> Iterator[Module]:
         """
         Return an iterator that yields all implemented modules from the context

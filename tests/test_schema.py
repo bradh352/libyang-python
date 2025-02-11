@@ -802,6 +802,73 @@ class LeafListTest(unittest.TestCase):
 
 
 # -------------------------------------------------------------------------------------
+class BacklinksTest(unittest.TestCase):
+    def setUp(self):
+        self.ctx = Context(YANG_DIR)
+        self.ctx.load_module("yolo-leafref-search")
+        self.ctx.load_module("yolo-leafref-search-extmod")
+
+    def tearDown(self):
+        self.ctx.destroy()
+        self.ctx = None
+
+    def test_backlinks_all_nodes(self):
+        expected = [
+            "/yolo-leafref-search-extmod:my_extref_list/my_extref",
+            "/yolo-leafref-search:refstr",
+            "/yolo-leafref-search:refnum",
+            "/yolo-leafref-search-extmod:my_extref_list/my_extref_union"
+        ]
+        refs = self.ctx.backlinks_find_leafref_nodes()
+
+        expected.sort()
+        refs.sort()
+        self.assertEqual(expected, refs)
+
+    def test_backlinks_one(self):
+        expected = [
+            "/yolo-leafref-search-extmod:my_extref_list/my_extref",
+            "/yolo-leafref-search:refstr",
+            "/yolo-leafref-search-extmod:my_extref_list/my_extref_union"
+        ]
+        refs = self.ctx.backlinks_find_leafref_nodes(
+            base_path="/yolo-leafref-search:my_list/my_leaf_string"
+        )
+
+        expected.sort()
+        refs.sort()
+        self.assertEqual(expected, refs)
+
+    def test_backlinks_children(self):
+        expected = [
+            "/yolo-leafref-search-extmod:my_extref_list/my_extref",
+            "/yolo-leafref-search:refstr",
+            "/yolo-leafref-search:refnum",
+            "/yolo-leafref-search-extmod:my_extref_list/my_extref_union"
+        ]
+        refs = self.ctx.backlinks_find_leafref_nodes(
+            base_path="/yolo-leafref-search:my_list/",
+            include_children=True
+        )
+
+        expected.sort()
+        refs.sort()
+        self.assertEqual(expected, refs)
+
+    def test_backlinks_xpath_leafrefs(self):
+        expected = [
+            "/yolo-leafref-search:my_list/my_leaf_string"
+        ]
+        refs = self.ctx.backlinks_xpath_leafrefs(
+            "/yolo-leafref-search-extmod:my_extref_list/my_extref"
+        )
+
+        expected.sort()
+        refs.sort()
+        self.assertEqual(expected, refs)
+
+
+# -------------------------------------------------------------------------------------
 class ChoiceTest(unittest.TestCase):
     def setUp(self):
         self.ctx = Context(YANG_DIR)
